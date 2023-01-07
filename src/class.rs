@@ -14,7 +14,7 @@ impl fmt::Display for Class {
     }
 }
 
-pub fn class(i: &str) -> IResult<&str, Class> {
+pub fn get_class(i: &str) -> IResult<&str, Class> {
     let (
         remaining_input,
         (_, _, class_name)
@@ -44,8 +44,9 @@ mod tests {
 
     #[test]
     fn test2() {
-        let result = class("class NonCntr ").unwrap();
+        let result = get_class("class NonCntr ").unwrap();
         let class = result.1;
-        assert_eq!(format!("{}", class), "class NonCntr")
+        assert_eq!(format!("{}", class), "class NonCntr");
+        assert_eq!(result.0, " ");
     }
 }
