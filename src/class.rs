@@ -37,7 +37,7 @@ pub fn get_class(i: &str) -> IResult<&str, Class> {
     ))(i)?;
 
     let class_name = class_name.to_string();
-    let id = class_name.clone();
+    let id = class_name.clone(); //FIXME
     let inherits = inherits.iter().map(|c| c.to_string()).collect();
     Ok((remaining_input, Class{name: class_name, id, inherits}))
 }
