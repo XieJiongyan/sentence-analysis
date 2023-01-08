@@ -1,0 +1,3 @@
+class Purpose : ThingsNotInWorld
+
+class Reason  : ThingsNotInWorld

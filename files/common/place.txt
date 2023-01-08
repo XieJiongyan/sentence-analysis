@@ -1,0 +1,5 @@
+class Place :ObjectInWorld
+
+class Country :Place
+class City :Place
+class Province :Place

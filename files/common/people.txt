@@ -1,0 +1,1 @@
+class People :ObjectInWorld

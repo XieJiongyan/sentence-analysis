@@ -1,0 +1,36 @@
+class.+IsCntr classifier {
+    true => cntr[k],
+    false => NonCntr,
+}
+
+class NonCntr 
+
+NonCntr.+BasicClassifier classifier {
+    classNum == 1 => match (isReal) {
+        true => ObjectInWorld,
+        false => ThingsNotInWorld,
+    },
+    classNum > 1 && classNum != Infinity => match (makeChanges) {
+        true => Motion,
+        false => Connection,
+    },
+    classNum == Infinity => Value
+}
+
+class ObjectInWorld
+class ThingsNotInWorld
+class Motion
+class Connection
+class Value
+
+class Action : Motion {
+    var time : cntr[Time]
+    var place: cntr[Place]
+}
+
+class PeopleAction : Action {
+    var People     : cntr[People]
+    var purpose    : cntr[Purpose]
+    var reason     : cntr[Reason]
+    var expected   : cntr[Action] //FIXME
+}

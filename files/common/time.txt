@@ -1,0 +1,5 @@
+class Time :ObjectInWorld //FIXME might not right
+
+class People.+WillDo {
+    peopleAction : cntr[PeopleAction]
+}

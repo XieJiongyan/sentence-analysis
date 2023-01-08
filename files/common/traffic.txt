@@ -1,0 +1,12 @@
+class Vehicle :ObjectInWorld
+
+class Train :Vehicle
+class AirPlane :Vehicle
+
+class People.+TakeTraffic :PeopleAction {
+    var startPlace : Place
+    var endPlace   : Place
+    var vehicle    : Vehicle 
+    
+    val place = [Place]{startPlace, endPlace}
+}

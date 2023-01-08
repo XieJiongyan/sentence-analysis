@@ -1,0 +1,2 @@
+class Meet : PeopleAction
+class Chat : PeopleAction
