@@ -2,7 +2,7 @@ use std::{fmt, collections::HashMap};
 
 use crate::class::{get_class, Class};
 
-fn parse(i: &str) -> Memory {
+fn _parse(i: &str) -> Memory {
     let mut memory = Memory {classes: HashMap::new()};
     let mut i = i;
     loop {
@@ -40,7 +40,7 @@ mod tests {
 
     #[test]
     fn test1() {
-        let memory = parse("class NonCntr class ObjectInWorld");
+        let memory = _parse("class NonCntr class ObjectInWorld");
         assert_eq!(format!("{}", memory), "class NonCntr\nclass ObjectInWorld\n");
     }
 }

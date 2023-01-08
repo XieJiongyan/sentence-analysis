@@ -1,7 +1,7 @@
 use std::fmt;
 
 use nom::{IResult, sequence::tuple};
-use nom::bytes::complete::{tag, take_while1};
+use nom::bytes::complete::{tag, take_while1, is_a, take_while_m_n, take_while};
 use nom::character::complete::{multispace1, multispace0};
 use nom::sequence::{preceded, delimited};
 use nom::multi::many0;
@@ -36,15 +36,22 @@ pub fn get_class(i: &str) -> IResult<&str, Class> {
         ))
     ))(i)?;
 
-    let class_name = class_name.to_string();
     let id = class_name.clone(); //FIXME
     let inherits = inherits.iter().map(|c| c.to_string()).collect();
     Ok((remaining_input, Class{name: class_name, id, inherits}))
 }
 
 //FIXME Now cannot suport number
-fn class_name(i: &str) -> IResult<&str, &str> {
-    take_while1(|s: char| { s >= 'a' && s <= 'z' || s >= 'A' && s <= 'Z'})(i)
+fn class_name(i: &str) -> IResult<&str, String> {
+    let cond1 = |s: char| {
+        s >= 'a' && s <= 'z' || s >= 'A' && s <= 'Z' || s == '_'
+    };
+    let (i, s0) = take_while_m_n(1, 1, cond1)(i)?;
+
+    let cond2 = |s: char| {cond1(s) || s >= '0' && s <= '9'};
+    let (remaining_input, s1) = take_while(cond2)(i)?;
+
+    Ok((remaining_input, format!("{}{}", s0, s1)))
 }
 #[cfg(test)]
 mod tests {
@@ -62,9 +69,9 @@ mod tests {
 
     #[test]
     fn test2() {
-        let result = get_class("class NonCntr ").unwrap();
+        let result = get_class("class NonCntr1 ").unwrap();
         let class = result.1;
-        assert_eq!(format!("{}", class), "class NonCntr");
+        assert_eq!(format!("{}", class), "class NonCntr1");
         assert_eq!(result.0, " ");
     }
 
