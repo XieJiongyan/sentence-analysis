@@ -8,5 +8,6 @@ class People.+TakeTraffic :PeopleAction {
     var endPlace   : Place
     var vehicle    : Vehicle 
     
-    val place = [Place]{startPlace, endPlace}
+    val$ place.contains(startPlace)
+    val$ place.contains(endPlace)
 }
