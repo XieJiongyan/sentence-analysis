@@ -7,10 +7,13 @@ use nom::sequence::{preceded, delimited};
 use nom::multi::many0;
 use nom::combinator::{opt};
 
+use crate::member::Var_member;
+
 pub struct Class {
     pub name: String,
     pub id  : String,
     pub inherits: Vec<String>,
+    pub vars: Vec<Var_member>
 }
 
 impl fmt::Display for Class {
@@ -36,15 +39,16 @@ pub fn get_class(i: &str) -> IResult<&str, Class> {
             class_name
         )),
         opt (delimited(
-            delimited(multispace0, tag("{"), multispace0), 
-            multispace0,
-            delimited(multispace0, tag("}"), multispace0),
+            tuple((multispace0, tag("{"), multispace0)), 
+            multispace0, //TODO make it able to read var
+            tuple((multispace0, tag("}"), multispace0)),
         )),
     ))(i)?;
 
     let id = class_name.clone(); //FIXME
     let inherits = inherits.iter().map(|c| c.to_string()).collect();
-    Ok((remaining_input, Class{name: class_name, id, inherits}))
+    let vars = vec![];
+    Ok((remaining_input, Class{name: class_name, id, inherits, vars}))
 }
 
 fn class_name(i: &str) -> IResult<&str, String> {
@@ -69,7 +73,8 @@ mod tests {
         let id = String::from("basic::ObjectInWord");
         let inherits = vec!["NonCntr"];
         let inherits = inherits.iter().map(|c| c.to_string()).collect();
-        let class = Class{ name, id, inherits };
+        let vars = vec![];
+        let class = Class{ name, id, inherits, vars };
         assert_eq!(format!("{}", class), "class ObjectInWord :NonCntr");
     }
 
