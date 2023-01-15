@@ -1,12 +1,12 @@
 use std::{fmt, collections::HashMap};
 
-use crate::class::{get_class, Class};
+use crate::class::{parse_class, Class};
 
 fn _parse(i: &str) -> Memory {
     let mut memory = Memory {classes: vec![], class_ids: HashMap::new()};
     let mut i = i;
     loop {
-        let result = get_class(i);
+        let result = parse_class(i);
         if let Err(_) = result {
             break;
         }
@@ -24,7 +24,7 @@ fn _parse(i: &str) -> Memory {
 
 struct Memory {
     classes: Vec<Class>,
-    class_ids: HashMap<String, usize>,
+    class_ids: HashMap<String, usize>, //FIXME: class id
 }
 
 impl fmt::Display for Memory {

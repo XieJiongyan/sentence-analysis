@@ -3,3 +3,4 @@ pub mod common;
 pub mod parser;
 pub mod member;
 pub mod utils;
+pub mod name;
