@@ -2,12 +2,13 @@ use std::fmt;
 
 
 ///member in class, not member variables in variable
-pub struct Var_member {
+pub struct VarMember {
     pub name: String,
-    pub inherits: Vec<(String, String)>, //There are (class.id, class.name) in the vec
+    pub inherits: Vec<(String, String)>, //There are (class.id, class.name) in the vec 
+    //FIXME make it ClassId
 }
 
-impl fmt::Display for Var_member {
+impl fmt::Display for VarMember {
     fn fmt(&self, f:  &mut fmt::Formatter) -> fmt::Result {
         write!(f, "var {}", self.name)?;
         for inherit in &self.inherits {
@@ -30,7 +31,7 @@ mod tests {
         let name = "startPlace".to_owned();
         let inherit = ("Place".to_owned(), "Place".to_owned());
         let inherits = vec![inherit];
-        let var_member = Var_member {name, inherits};
+        let var_member = VarMember {name, inherits};
         assert_eq!(format!("{}", var_member), "var startPlace :Place");
     }
 }

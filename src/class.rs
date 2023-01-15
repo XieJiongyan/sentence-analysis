@@ -1,19 +1,19 @@
 use std::fmt;
 
 use nom::{IResult, sequence::tuple};
-use nom::bytes::complete::{tag, take_while1, is_a, take_while_m_n, take_while};
+use nom::bytes::complete::{tag, take_while_m_n, take_while};
 use nom::character::complete::{multispace1, multispace0};
 use nom::sequence::{preceded, delimited};
 use nom::multi::many0;
 use nom::combinator::{opt};
 
-use crate::member::Var_member;
+use crate::member::VarMember;
 
 pub struct Class {
     pub name: String,
     pub id  : String,
-    pub inherits: Vec<String>,
-    pub vars: Vec<Var_member>
+    pub inherits: Vec<String>, //FIXME make it ClassId
+    pub vars: Vec<VarMember>
 }
 
 impl fmt::Display for Class {
@@ -21,6 +21,13 @@ impl fmt::Display for Class {
         write!(f, "class {}", self.name)?;
         for inherit in &self.inherits {
             write!(f, " :{}", inherit)?;
+        }
+        if self.vars.len() > 0 {
+            write!(f, " {{\n")?;
+            for var_member in &self.vars {
+                write!(f, "  {}\n", var_member)?;
+            }
+            write!(f, "}}")?;
         }
         Ok(())
     }
@@ -92,5 +99,38 @@ mod tests {
         let result = get_class(file).unwrap();
         let class = result.1;
         assert_eq!(format!("{}", class), "class ObjectInWorld :NonCntr");
+    }
+
+    /// Test display for vars
+    #[test]
+    fn test4() {
+        let name = "TakeTraffic".to_owned();
+        let id = "common.traffic.TakeTraffic".to_owned();
+        let inherits = vec!["PeopleAction".to_owned()];
+        let vars = vec![
+            VarMember{
+                name: "startPlace".to_owned(),
+                inherits: vec![("common.place.Place".to_owned(), "Place".to_owned())]
+            },
+            VarMember{
+                name: "endPlace".to_owned(),
+                inherits: vec![("common.place.Place".to_owned(), "Place".to_owned())]
+            },
+            VarMember{
+                name: "vehicle".to_owned(),
+                inherits: vec![("common.traffic.Vehicle".to_owned(), "Vehicle".to_owned())]
+            },
+        ];
+        let class = Class{name, id, inherits, vars};
+        let expected = "
+class TakeTraffic :PeopleAction {
+  var startPlace :Place
+  var endPlace :Place
+  var vehicle :Vehicle
+}
+        ".trim();
+        let output = format!("{}", class);
+        let output = output.trim();
+        assert_eq!(expected, output);
     }
 }
