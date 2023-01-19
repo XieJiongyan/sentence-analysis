@@ -1,0 +1,10 @@
+final Strickland :People 
+
+forEach mystery {
+    Strickland.containsMystery(mystery).isRight -> !exist me
+        .FindOut(mystery)
+        .+time(me.meet(Strickland).firstTime.time)
+}
+
+exist me.spot(people.deny(Strickland.isGreat))
+    .+freaquency(Seldom).+time(now)

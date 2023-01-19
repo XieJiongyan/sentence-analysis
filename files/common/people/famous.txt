@@ -1,0 +1,6 @@
+class People.+Famous {
+    var isFamous :RelativeProposition
+    var isGreat  :RelativeProposition
+}
+
+class Greatness :ThingsNotInWorld
