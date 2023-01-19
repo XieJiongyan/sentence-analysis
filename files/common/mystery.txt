@@ -1,0 +1,9 @@
+class Mystery :Connection //FIXME
+
+class People.+FindOut :PeopleAction {
+    var thing :cntr[O]
+}
+
+class People.+ContainsMystery :PeopleConnection {
+    var containsMystery(mystery) :AbsoluteProposition
+}

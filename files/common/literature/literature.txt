@@ -1,0 +1,10 @@
+class Forward: ThingsNotInWorld
+
+class Readable 
+class Novel :ObjectInWorld :Readable {
+    var author :Writer
+}
+
+class People.+Read :Ability {
+    var target :Readable
+}

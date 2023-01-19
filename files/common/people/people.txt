@@ -1,0 +1,7 @@
+class People :ObjectInWorld
+
+class People.+Profession multi_classifier {
+    Writer
+}
+
+class Writer

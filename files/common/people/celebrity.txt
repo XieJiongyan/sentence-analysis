@@ -1,0 +1,9 @@
+class Celebrity :People
+
+class Celebrity classifier {
+    Maugham
+}
+
+class Maugham {
+    val$ self is Writer
+}

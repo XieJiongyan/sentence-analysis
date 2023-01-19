@@ -1,2 +1,15 @@
-class Meet : PeopleAction
 class Chat : PeopleAction
+
+class.+Famous :Connection {
+    var isFamous :bool
+}
+class People.+IsGreat :RelativeProposition
+
+class People.+Deny :PeopleAction {
+    var proposition
+}
+
+class People.-Social {
+    var meet(people) :PeopleAction
+    var spot(action) :PeopleAction
+}

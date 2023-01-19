@@ -1,0 +1,7 @@
+class Novel.+Work classifier {
+    TheMoonAndSixpence,
+    SherlockHolmes,
+}
+
+class TheMoonAndSixpence :Novel
+class SherlockHolmes :Novel

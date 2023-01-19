@@ -23,14 +23,39 @@ class Motion
 class Connection
 class Value
 
-class Action : Motion {
-    var time : cntr[Time]
-    var place: cntr[Place]
+class Connection.+IsRelative {
+    var is_relative :bool
+    classifier {
+        is_relative => RelativeConnection,
+        !is_relative => AbsoluteConnection,
+    }
 }
 
-class PeopleAction : Action {
-    var People     : cntr[People]
-    var purpose    : cntr[Purpose]
-    var reason     : cntr[Reason]
-    var expected   : cntr[Action] //FIXME
+class RelativeConnection :Connection {
+    var condition :cntr[AbsoluteProposition]
+}
+
+class Proposition :Connection {
+    var isRight :bool
+}
+
+class AbsoluteProposition :Proposition :AbsoluteConnection
+class RelativeProposition :Proposition :RelativeConnection {
+    var whenCntr :cntr[Time]
+    var place    :cntr[Place]
+}
+
+class.+IndividualEvaluation :RelativeProposition {
+    var bases :set[Base]
+    var$ consider_one(b: Base) bases.contains(b)
+
+    val$ condition.include(consider_one)
+}
+
+class.+Ability :RelativeConnection //TODO: base can perform his ability 
+
+class Proposition.+IsTruth {
+    var isTrue :bool,
+    var isOtherSays :bool,
+    var sayer       :People,
 }

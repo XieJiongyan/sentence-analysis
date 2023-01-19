@@ -1,0 +1,12 @@
+class.+IsFantastic : IndividualEvaluation {
+    var isFantastic: bool
+}
+
+class Simage.pngimile :RelativeConnection {
+    var singleSimiles :[]SingleSimile
+}
+
+class SingleSimile :Connection {
+    var ontology :Class 
+    var metaphor :Class
+}

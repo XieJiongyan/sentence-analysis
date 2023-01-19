@@ -1,0 +1,15 @@
+class Country :ObjectInWorld
+
+class Country.+culture classifier {
+    UK
+}
+
+class UK
+
+class Country.+region {
+    var is_western :bool
+}
+
+class People.+CountryOfCitizenship {
+    var country
+}

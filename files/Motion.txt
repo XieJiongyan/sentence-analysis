@@ -1,0 +1,21 @@
+class Action : Motion {
+    var time : cntr[Time]
+    var place: cntr[Place]
+    
+    var freaquency
+
+    var firstTime :Action
+}
+
+class PeopleAction : Action {
+    var People     : cntr[People]
+    var purpose    : cntr[Purpose]
+    var reason     : cntr[Reason]
+    var expected   : cntr[Action] //FIXME
+}
+
+class Frequency :ThingsNotInWorld classifier {
+    Always,
+    Offen,
+    Seldom
+}
