@@ -2,11 +2,12 @@ class People :ObjectInWorld {
     var deny(proposition) :PeopleAction 
     var meet(people)      :PeopleAction
     var spot(action)      :PeopleAction
-
 }
 
 class People.+Profession multi_classifier {
-    Writer
+    Writer,
+    Politician,
+    Soldier,
 }
 
 class Writer

@@ -2,31 +2,32 @@ use std::fmt;
 
 use nom::{IResult, sequence::tuple};
 use nom::multi::many0;
-use nom::bytes::complete::{tag};
+use nom::bytes::complete::tag;
 use crate::name::parse_name;
+use crate::utils::class_id::ClassId;
 use nom::sequence::{preceded, delimited, terminated};
 use nom::character::complete::{multispace1, multispace0};
 
 
 ///member in class, not member variables in variable
-#[derive(PartialEq, Debug)]
-pub struct VarMember {
+#[derive(PartialEq)]
+pub struct Var {
     pub name: String,
-    pub inherits: Vec<(String, String)>, //There are (class.id, class.name) in the vec 
+    pub inherits: Vec<ClassId>, //There are (class.id, class.name) in the vec 
     //TODO make it ClassId
 }
 
-impl fmt::Display for VarMember {
+impl fmt::Display for Var {
     fn fmt(&self, f:  &mut fmt::Formatter) -> fmt::Result {
         write!(f, "var {}", self.name)?;
         for inherit in &self.inherits {
-            write!(f, " :{}", inherit.1)?;
+            write!(f, " :{}", inherit.get_name())?;
         }
         Ok(())
     }
 }
 
-fn parse_var_member(i: &str) -> IResult<&str, VarMember> {
+fn parse_var_member(i: &str) -> IResult<&str, Var> {
     let (
         remaining_input,
         (_, _, name, inherits)
@@ -41,13 +42,13 @@ fn parse_var_member(i: &str) -> IResult<&str, VarMember> {
     ))(i)?;
     let inherits = inherits
         .iter()
-        .map(move |s| (s.to_owned(), s.to_owned()))
+        .map(move |s| ClassId{id: s.to_owned()})
         .collect();
-    let var_member = VarMember{name, inherits};
+    let var_member = Var{name, inherits};
     Ok((remaining_input, var_member))
 }
 
-pub fn parse_vars(i: &str) -> IResult<&str, Vec<VarMember>> {
+pub fn parse_vars(i: &str) -> IResult<&str, Vec<Var>> {
     Ok(many0(terminated(parse_var_member, multispace0))(i)?)
 }
 #[cfg(test)]
@@ -57,9 +58,9 @@ mod tests {
     #[test]
     fn test1() {
         let name = "startPlace".to_owned();
-        let inherit = ("Place".to_owned(), "Place".to_owned());
+        let inherit = ClassId{id: "Place".to_owned()};
         let inherits = vec![inherit];
-        let var_member = VarMember {name, inherits};
+        let var_member = Var {name, inherits};
         assert_eq!(format!("{}", var_member), "var startPlace :Place");
     }
 
@@ -69,10 +70,10 @@ mod tests {
         let result = parse_vars(file).unwrap();
         let vars = result.1;
         assert_eq!(vars.len(), 2);
-        let var_member = VarMember{
+        let var_member = Var{
             name: "startPlace".to_owned(),
-            inherits: vec![("Place".to_owned(), "Place".to_owned())],
+            inherits: vec![ClassId::from("Place")],
         };
-        assert_eq!(vars.get(0).unwrap(), &var_member);
+        assert!(vars.get(0).unwrap() == &var_member);
     }
 }

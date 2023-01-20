@@ -7,14 +7,15 @@ use nom::sequence::{preceded, delimited};
 use nom::multi::many0;
 use nom::combinator::opt;
 
-use crate::member::{VarMember, parse_vars};
+use crate::var::{Var, parse_vars};
 use crate::name::parse_name;
+use crate::utils::class_id::ClassId;
 
 pub struct Class {
     pub name: String,
     pub id  : String,
     pub inherits: Vec<String>, //TODO make it ClassId
-    pub vars: Vec<VarMember>
+    pub vars: Vec<Var>
 }
 
 impl fmt::Display for Class {
@@ -99,17 +100,17 @@ mod tests {
         let id = "common.traffic.TakeTraffic".to_owned();
         let inherits = vec!["PeopleAction".to_owned()];
         let vars = vec![
-            VarMember{
+            Var{
                 name: "startPlace".to_owned(),
-                inherits: vec![("common.place.Place".to_owned(), "Place".to_owned())]
+                inherits: vec![ClassId::from("common.place.Place")]
             },
-            VarMember{
+            Var{
                 name: "endPlace".to_owned(),
-                inherits: vec![("common.place.Place".to_owned(), "Place".to_owned())]
+                inherits: vec![ClassId::from("common.place.Place")]
             },
-            VarMember{
+            Var{
                 name: "vehicle".to_owned(),
-                inherits: vec![("common.traffic.Vehicle".to_owned(), "Vehicle".to_owned())]
+                inherits: vec![ClassId::from("common.traffic.Vehicle")]
             },
         ];
         let class = Class{name, id, inherits, vars};

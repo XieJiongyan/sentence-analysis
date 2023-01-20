@@ -1,6 +1,13 @@
 class People.+Famous {
     var isFamous :RelativeProposition
     var isGreat  :RelativeProposition
+    var isSuccess:RelativeProposition
+    
+    $ foreach people {
+        people.isGreat -> exist greatness.+whos(people)
+    }
 }
 
-class Greatness :ThingsNotInWorld
+class Greatness :ThingsNotInWorld {
+    var whos :People
+}
