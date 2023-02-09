@@ -3,18 +3,18 @@ class.+IsCntr classifier {
     false => NonCntr,
 }
 
-class NonCntr 
-
-NonCntr.+BasicClassifier classifier {
-    classNum == 1 => match (isReal) {
-        true => ObjectInWorld,
-        false => ThingsNotInWorld,
-    },
-    classNum > 1 && classNum != Infinity => match (makeChanges) {
-        true => Motion,
-        false => Connection,
-    },
-    classNum == Infinity => Value
+class NonCntr {
+    classifier BasicClassifier {
+        classNum == 1 => match (isReal) {
+            true => ObjectInWorld,
+            false => ThingsNotInWorld,
+        },
+        classNum > 1 && classNum != Infinity => match (makeChanges) {
+            true => Motion,
+            false => Connection,
+        },
+        classNum == Infinity => Value
+    }
 }
 
 class ObjectInWorld
@@ -23,34 +23,6 @@ class Motion
 class Connection
 class Value
 
-class Connection.+IsRelative {
-    var is_relative :bool
-    classifier {
-        is_relative => RelativeConnection,
-        !is_relative => AbsoluteConnection,
-    }
-}
-
-class RelativeConnection :Connection {
-    var condition :cntr[AbsoluteProposition]
-}
-
-class Proposition :Connection {
-    var isRight :bool
-}
-
-class AbsoluteProposition :Proposition :AbsoluteConnection
-class RelativeProposition :Proposition :RelativeConnection {
-    var whenCntr :cntr[Time]
-    var place    :cntr[Place]
-}
-
-class.+IndividualEvaluation :RelativeProposition {
-    var bases :set[Base]
-    var$ consider_one(b: Base) bases.contains(b)
-
-    val$ condition.include(consider_one)
-}
 
 class.+Ability :RelativeConnection //TODO: base can perform his ability 
 

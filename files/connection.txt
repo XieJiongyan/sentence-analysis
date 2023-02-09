@@ -1,0 +1,25 @@
+class Connection.+IsRelative {
+    var is_relative :bool
+    classifier {
+        is_relative => RelativeConnection,
+        !is_relative => AbsoluteConnection,
+    }
+}
+
+class RelativeConnection :Connection {
+    var condition :cntr[AbsoluteProposition]
+}
+
+class Proposition :Connection {
+    var isRight :bool
+}
+
+class AbsoluteProposition :Proposition :AbsoluteConnection
+class RelativeProposition :Proposition :RelativeConnection {
+    var time :cntr[Time]
+    var place:cntr[Place]
+}
+
+class Cognition :RelativeProposition {
+    $ isRight = true
+}
