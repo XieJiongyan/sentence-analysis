@@ -14,7 +14,7 @@ use nom::character::complete::{multispace1, multispace0};
 pub struct Var {
     pub name: String,
     pub inherits: Vec<ClassId>, //There are (class.id, class.name) in the vec 
-    //TODO make it ClassId
+    //TODO add parameter
 }
 
 impl fmt::Display for Var {

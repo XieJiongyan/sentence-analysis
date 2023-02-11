@@ -1,7 +1,11 @@
 class People :ObjectInWorld {
-    var deny(proposition) :PeopleAction 
-    var meet(people)      :PeopleAction
-    var spot(action)      :PeopleAction
+    var deny(proposition)  :PeopleAction 
+    var meet(people)       :PeopleAction
+    var spot(action)       :PeopleAction
+    var hope(connection)   :PeopleAction
+    var similar_to(people) :RelativeProposition
+    var isHandsome         :RelativeProposition
+    var isYoung            :RelativeProposition
 }
 
 class People.+Profession multi_classifier {
@@ -11,7 +15,8 @@ class People.+Profession multi_classifier {
 }
 
 class Writer
+class WhiteHorsePrince
 
-class.+ByPeople {
-
+class People.+Merry {
+    var merryWith(People) :AbsoluteConnection
 }

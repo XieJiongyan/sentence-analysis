@@ -1,4 +1,6 @@
-class Time :ObjectInWorld //FIXME might not right
+class Time :ObjectInWorld {//FIXME might not right 
+    var when(proposition) :Connection
+}
 
 class People.+WillDo {
     peopleAction : cntr[PeopleAction]

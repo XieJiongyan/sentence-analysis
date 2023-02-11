@@ -1,0 +1,3 @@
+class Conjunction :Proposition
+
+class Proposition:-So :Proposition 
