@@ -14,3 +14,9 @@ impl From<&str> for ClassId {
         ClassId { id: a.to_owned() }
     }
 }
+
+impl From<String> for ClassId {
+    fn from(a: String) -> Self {
+        ClassId { id: a.clone() }
+    }
+}

@@ -14,7 +14,7 @@ use crate::utils::class_id::ClassId;
 pub struct Class {
     pub name: String,
     pub id  : String,
-    pub inherits: Vec<String>, //TODO make it ClassId
+    pub inherits: Vec<ClassId>, 
     pub vars: Vec<Var>
 }
 
@@ -22,7 +22,7 @@ impl fmt::Display for Class {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "class {}", self.name)?;
         for inherit in &self.inherits {
-            write!(f, " :{}", inherit)?;
+            write!(f, " :{}", inherit.get_name())?;
         }
         if self.vars.len() > 0 {
             write!(f, " {{\n")?;
@@ -55,7 +55,10 @@ pub fn parse_class(i: &str) -> IResult<&str, Class> {
     ))(i)?;
 
     let id = class_name.clone(); //FIXME get right id
-    let inherits = inherits.iter().map(|c| c.to_string()).collect();
+    let inherits = inherits
+        .iter()
+        .map(|c| ClassId::from(c.to_string())) //FIXME get right class ID
+        .collect();
     let vars = vars.unwrap_or(vec![]);
     let class = Class{name: class_name, id, inherits, vars};
     Ok((remaining_input, class))
@@ -71,7 +74,10 @@ mod tests {
         let name = String::from("ObjectInWord");
         let id = String::from("basic::ObjectInWord");
         let inherits = vec!["NonCntr"];
-        let inherits = inherits.iter().map(|c| c.to_string()).collect();
+        let inherits = inherits
+            .iter()
+            .map(|c| ClassId::from(c.to_string()))
+            .collect();
         let vars = vec![];
         let class = Class{ name, id, inherits, vars };
         assert_eq!(format!("{}", class), "class ObjectInWord :NonCntr");
@@ -98,7 +104,7 @@ mod tests {
     fn test4() {
         let name = "TakeTraffic".to_owned();
         let id = "common.traffic.TakeTraffic".to_owned();
-        let inherits = vec!["PeopleAction".to_owned()];
+        let inherits = vec![ClassId::from("PeopleAction")];
         let vars = vec![
             Var{
                 name: "startPlace".to_owned(),
