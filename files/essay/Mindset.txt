@@ -1,0 +1,5 @@
+let myStudents : set[Student]
+myStudents.teachers.contains(me)
+
+let MindsetBook : Book
+exist myStudents.let(me.setDown).and(myStudents.order(me.write(MindsetBook)))

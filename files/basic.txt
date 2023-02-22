@@ -1,3 +1,6 @@
+class {
+    isExist :bool
+}
 class.+IsCntr classifier {
     true => cntr[k],
     false => NonCntr,

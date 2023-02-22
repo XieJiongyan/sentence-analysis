@@ -1,0 +1,22 @@
+class People.+Profession multi_classifier {
+    Writer,
+    Politician,
+    Soldier,
+    Student,
+    Teacher
+}
+
+class Writer
+class WhiteHorsePrince
+
+class People.+Merry {
+    var merryWith(People) :AbsoluteConnection
+}
+
+class Teacher {
+    var students set[Student] //TODO: 老师和学生之间是一个双向关系
+}
+
+class Student {
+    var teachers set[Teacher] //TODO: 老师和学生之间是一个双向关系
+}

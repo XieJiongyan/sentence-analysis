@@ -1,22 +1,18 @@
 class People :ObjectInWorld {
-    var deny(proposition)  :PeopleAction 
-    var meet(people)       :PeopleAction
-    var spot(action)       :PeopleAction
-    var hope(connection)   :PeopleAction
+    cls deny(proposition)  :PeopleAction 
+    cls meet(people)       :PeopleAction
+    cls spot(action)       :PeopleAction
+    cls hope(connection)   :PeopleAction
+    cls let(peopleAction)  :PeopleAction
+    cls order(peopleAction):PeopleAction
+
+    cls write(readable)    :PeopleAction
+
+    cls setDown            :PeopleAction //指一种可能发生的行为. 1 可以发生多次, 2 可以不发生
+
     var similar_to(people) :RelativeProposition
     var isHandsome         :RelativeProposition
     var isYoung            :RelativeProposition
+    var let(action)        :PeopleAction
 }
 
-class People.+Profession multi_classifier {
-    Writer,
-    Politician,
-    Soldier,
-}
-
-class Writer
-class WhiteHorsePrince
-
-class People.+Merry {
-    var merryWith(People) :AbsoluteConnection
-}

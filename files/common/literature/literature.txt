@@ -2,9 +2,11 @@ class Forward: ThingsNotInWorld
 
 class Readable 
 class Novel :ObjectInWorld :Readable {
-    var author :Writer
+    var author :Writer //这个是属性, 是一定有的, 而且仅能有一次
 }
 
 class People.+Read :Ability {
     var target :Readable
 }
+
+class Book :Readable

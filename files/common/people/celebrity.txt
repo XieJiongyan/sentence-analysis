@@ -5,5 +5,5 @@ class Celebrity classifier {
 }
 
 class Maugham {
-    val$ self is Writer
+    $ self is Writer
 }

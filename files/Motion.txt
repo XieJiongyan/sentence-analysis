@@ -12,6 +12,8 @@ class PeopleAction : Action {
     var purpose    : cntr[Purpose]
     var reason     : cntr[Reason]
     var expected   : cntr[Action] //FIXME
+
+    var and(PeopleAction) : PeopleAction //FIXME 构成一个连词, 但可以认为是一个行为组. 另外显然并不所有 PeopleAction 都可以连接起来, 不过似乎可以通过 Exist 解释.
 }
 
 class Frequency :ThingsNotInWorld classifier {
