@@ -1,4 +1,6 @@
 class PersonalPronoun :People
 
-let me :PersonalPronoun
-let I  :PersonalPronoun
+let me   :PersonalPronoun
+let I    :PersonalPronoun
+
+let they :PersonalPronoun

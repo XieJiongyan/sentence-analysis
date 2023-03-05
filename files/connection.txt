@@ -23,3 +23,6 @@ class RelativeProposition :Proposition :RelativeConnection {
 class Cognition :RelativeProposition {
     $ isRight = true
 }
+
+
+class PeopleAbility :RelativeProposition

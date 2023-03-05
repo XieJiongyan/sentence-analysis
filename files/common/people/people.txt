@@ -2,9 +2,17 @@ class People :ObjectInWorld {
     cls deny(proposition)  :PeopleAction 
     cls meet(people)       :PeopleAction
     cls spot(action)       :PeopleAction
-    cls hope(connection)   :PeopleAction
-    cls let(peopleAction)  :PeopleAction
+    cls hope(connection)   :Connection
+    cls want(connection)   :Connection
     cls order(peopleAction):PeopleAction
+    cls make(connection)   :PeopleAction
+    var let(action)        :PeopleAction
+
+    cls beAbleTo(peopleAction) :PeopleAbility
+
+    cls use_to(class, PeopleAction) :PeopleAction
+
+    $ people.beAbleTo(peopleAction) => peopleAction.super == people
 
     cls write(readable)    :PeopleAction
 
@@ -13,6 +21,7 @@ class People :ObjectInWorld {
     var similar_to(people) :RelativeProposition
     var isHandsome         :RelativeProposition
     var isYoung            :RelativeProposition
-    var let(action)        :PeopleAction
+
+    var liveBetter         :RelativeProposition
 }
 

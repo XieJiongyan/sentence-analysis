@@ -1,5 +1,7 @@
 let myStudents : set[Student]
 myStudents.teachers.contains(me)
-
 let MindsetBook : Book
-exist myStudents.let(me.setDown).and(myStudents.order(me.write(MindsetBook)))
+exist myStudents.do([let(_, me.setDown), order(_, me.write(MindsetBook))])
+
+foreach people exist they.want(people.beAbleTo(use_to(_, ourWork, make(_, people
+    .liveBetter))))

@@ -1,3 +1,2 @@
-class Conjunction :Proposition
+class Conjunction :Connection
 
-class Proposition:-So :Proposition 

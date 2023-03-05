@@ -21,3 +21,16 @@ class Frequency :ThingsNotInWorld classifier {
     Offen,
     Seldom
 }
+
+class People.+Do {
+    cls do([]PeopleAction) PeopleAction
+    $ {
+        let peopleActions :[]PeopleAction
+        exist people.do(peopleActions) 
+            && peopleActions.contains(peopleAction) 
+        => 
+        exist peopleAction
+            && peopleAction.super == people
+
+    }
+}
