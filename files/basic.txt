@@ -27,10 +27,12 @@ class Connection
 class Value
 
 
-class.+Ability :RelativeConnection //TODO: base can perform his ability 
-
 class Proposition.+IsTruth {
     var isTrue :bool,
     var isOtherSays :bool,
     var sayer       :People,
+}
+
+class.+Became {
+    cls became(->Connection) RelativeProposition
 }

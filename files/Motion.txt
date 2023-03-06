@@ -5,6 +5,8 @@ class Action : Motion {
     var freaquency
 
     var firstTime :Action
+
+    cls and(action) : Conjunction //FIXME 构成一个连词, 但可以认为是一个行为组. 另外显然并不所有 PeopleAction 都可以连接起来, 不过似乎可以通过 Exist 解释.
 }
 
 class PeopleAction : Action {
@@ -13,8 +15,11 @@ class PeopleAction : Action {
     var reason     : cntr[Reason]
     var expected   : cntr[Action] //FIXME
 
-    var and(PeopleAction) : PeopleAction //FIXME 构成一个连词, 但可以认为是一个行为组. 另外显然并不所有 PeopleAction 都可以连接起来, 不过似乎可以通过 Exist 解释.
+    var priority
 }
+
+class Priority
+class NumberOnePriority :Priority
 
 class Frequency :ThingsNotInWorld classifier {
     Always,
@@ -23,7 +28,7 @@ class Frequency :ThingsNotInWorld classifier {
 }
 
 class People.+Do {
-    cls do([]PeopleAction) PeopleAction
+    cls do(->[]PeopleAction) PeopleAction
     $ {
         let peopleActions :[]PeopleAction
         exist people.do(peopleActions) 

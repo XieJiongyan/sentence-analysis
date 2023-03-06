@@ -1,5 +1,11 @@
+class Duration :ObjectInWorld
+
+class ForALongTime :Duration
+
 class Time :ObjectInWorld {//FIXME might not right 
     var when(proposition) :Connection
+    var duration
+    var isBefore :AbsoluteProposition
 }
 
 class People.+WillDo {

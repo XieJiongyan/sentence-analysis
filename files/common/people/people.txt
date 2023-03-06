@@ -4,13 +4,14 @@ class People :ObjectInWorld {
     cls spot(action)       :PeopleAction
     cls hope(connection)   :Connection
     cls want(connection)   :Connection
+    cls wantTo(->PeopleAction)     :Connection
     cls order(peopleAction):PeopleAction
     cls make(connection)   :PeopleAction
     var let(action)        :PeopleAction
 
-    cls beAbleTo(peopleAction) :PeopleAbility
+    cls beAbleTo(->peopleAction) :PeopleAbility
 
-    cls use_to(class, PeopleAction) :PeopleAction
+    cls use_to(class, Action) :PeopleAction
 
     $ people.beAbleTo(peopleAction) => peopleAction.super == people
 
