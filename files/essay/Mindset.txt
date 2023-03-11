@@ -1,7 +1,9 @@
 let myStudents : set[Student]
 myStudents.teachers.contains(me)
 let MindsetBook : Book
-exist myStudents.do([let(_, me.setDown), order(_, me.write(MindsetBook))])
+exist myStudents.do(->[]{let(me.setDown), order(me.write(MindsetBook))})
 
-foreach people exist they.want(people.beAbleTo(use_to(_, ourWork, make(_, people
-    .liveBetter))))
+foreach people
+exist they.want(people.beAbleTo->use_to(ourWork, ->make(people.liveBetter)))
+
+exist I.wantTo->do(->[]{it}).+time(isBefore#1, duration = ForALongTime).but(it.became->+priority(NumberOnePriority))
