@@ -33,10 +33,3 @@ class Proposition.+IsTruth {
     var sayer       :People,
 }
 
-class.+Became {
-    cls became(->Connection) RelativeProposition
-}
-
-class.+Owner {
-    var of class
-}
