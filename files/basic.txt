@@ -36,3 +36,7 @@ class Proposition.+IsTruth {
 class.+Became {
     cls became(->Connection) RelativeProposition
 }
+
+class.+Owner {
+    var of class
+}

@@ -10,3 +10,19 @@ class SingleSimile :Connection {
     var ontology :Class 
     var metaphor :Class
 }
+
+class.+Became {
+    cls became(->Connection) RelativeProposition
+}
+
+class.+Owner {
+    var of class
+}
+
+class.+Part {
+    cls isPartOf(Class) Proposition
+}
+
+class.+Show {
+    cls show(Class) Connection
+}

@@ -1,0 +1,5 @@
+class Subject :ThingsNotInWorld
+
+class Chinese    :Subject
+class Math       :Subject
+class Psychology :Subject

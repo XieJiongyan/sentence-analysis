@@ -2,6 +2,7 @@ class PersonalPronoun :People
 
 let me   :PersonalPronoun
 let I    :PersonalPronoun
+let mine :PersonalPronoun
 
 let it   :PersonalPronoun
 

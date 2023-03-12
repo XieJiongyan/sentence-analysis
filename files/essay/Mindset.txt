@@ -6,4 +6,7 @@ exist myStudents.do(->[]{let(me.setDown), order(me.write(MindsetBook))})
 foreach people
 exist they.want(people.beAbleTo->use_to(ourWork, ->make(people.liveBetter)))
 
-exist I.wantTo->do(->[]{it}).+time(isBefore#1, duration = ForALongTime).but(it.became->+priority(NumberOnePriority))
+exist I.wantTo->do(->[]{it}).+time{isBefore#1, duration = ForALongTime}.but(it.became->$(priority = NumberOnePriority))
+
+exist work, tradition, power, belief
+s.t. work.+of(mine).isPartOf(tradition.+in(Psychology).+show(power.+of(belief.+of(people))))

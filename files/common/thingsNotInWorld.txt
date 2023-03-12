@@ -1,0 +1,9 @@
+class Work :ThingsNotInWorld
+
+class Tradition :ThingsNotInWorld {
+    var in class //什么的传统
+}
+
+class Power :ThingsNotInWorld {
+    var of class //什么的力量
+}
