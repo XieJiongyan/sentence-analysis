@@ -1,2 +1,23 @@
-class Conjunction :Connection
+class Conjunction :Cognition
 
+class.+Conjunction {
+    cls or(Class) Conjunction
+    cls and(Class) Conjunction
+    cls but(Class) Conjunction
+}
+
+class ConnectionConjunction :Conjunction :Connection {
+    classifier All {
+        AndConnection,
+        OrConnection,
+        ButConnection,
+    }
+
+    var connectionLeft  Connection
+}
+
+class Connection.+Conjunction {
+    cls or(Connection)  OrConnection
+    cls and(Connection) AndConnection
+    cls but(Connection) 
+}

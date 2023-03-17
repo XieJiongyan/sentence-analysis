@@ -1,0 +1,11 @@
+class Possibility :Connection 
+
+class Possibility.+Colloquial multi-classifier {
+    Always,
+    Probably,
+    May,
+    Often,
+    Possible,
+    Seldom,
+    Never
+}

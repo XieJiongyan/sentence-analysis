@@ -1,4 +1,4 @@
-let myStudents : set[Student]
+let myStudents : set[Student] //FIXME
 myStudents.teachers.contains(me)
 let MindsetBook : Book
 exist myStudents.do(->[]{let(me.setDown), order(me.write(MindsetBook))})
@@ -10,3 +10,6 @@ exist I.wantTo->do(->[]{it}).+time{isBefore#1, duration = ForALongTime}.but(it.b
 
 exist work, tradition, power, belief
 s.t. my@work.isPartOf(tradition.+in(Psychology).+show(power.+of(People@belief)))#1
+
+exist beliefs :[]Belief, what :Class 
+s.t. exist (these in#1.+possibility{::May} beliefs{we.beAwareOf(beliefs)#1.or(we.beAwareOf(beliefs)#2)}).but(they.affect(what{we.want(what)#1}.and(we.SuccessIn->get(it)#F#3)).+extent{::Strongly})

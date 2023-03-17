@@ -1,6 +1,17 @@
+class Connection {
+    var super class 
+    var target class 
+}
+
+class Proposition.+IsTruth {
+    var isTrue :bool,
+    var isOtherSays :bool,
+    var sayer       :People,
+}
+
 class Connection.+IsRelative {
     var is_relative :bool
-    classifier {
+    classifier Relativity {
         is_relative => RelativeConnection,
         !is_relative => AbsoluteConnection,
     }
@@ -25,4 +36,10 @@ class Cognition :RelativeProposition {
 }
 
 
-class PeopleAbility :RelativeProposition
+class PeopleAbility :RelativeProposition {
+    var people
+}
+
+class Connection.+Possibility {
+    var possibility 
+}

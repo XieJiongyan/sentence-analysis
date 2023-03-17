@@ -1,15 +1,16 @@
 class People :ObjectInWorld {
-    cls deny(proposition)  :PeopleAction 
-    cls meet(people)       :PeopleAction
-    cls spot(action)       :PeopleAction
-    cls hope(connection)   :Connection
-    cls want(connection)   :Connection
-    cls wantTo(->PeopleAction)     :Connection
-    cls order(peopleAction):PeopleAction
-    cls make(connection)   :PeopleAction
-    var let(action)        :PeopleAction
+    cls Deny(Proposition)  :PeopleAction 
+    cls Meet(People)       :PeopleAction
+    cls Spot(Action)       :PeopleAction
+    cls Hope(Connection)   :Connection
+    cls Order(PeopleAction):PeopleAction
+    cls Make(Connection)   :PeopleAction
+    cls Let(Action)        :PeopleAction
+    cls Get(Class)         :PeopleAction
 
     cls beAbleTo(->peopleAction) :PeopleAbility
+    cls Want(A[]{Connection, Object})   :Connection
+    cls WantTo(->PeopleAction)     :Connection
 
     cls use_to(class, Action) :PeopleAction
 
@@ -18,6 +19,8 @@ class People :ObjectInWorld {
     cls write(readable)    :PeopleAction
 
     cls setDown            :PeopleAction //指一种可能发生的行为. 1 可以发生多次, 2 可以不发生
+    cls beAwareOf(class)   :PeopleAction//意识到
+    cls SuccessIn(PeopleAction) :PeopleAction
 
     var similar_to(people) :RelativeProposition
     var isHandsome         :RelativeProposition

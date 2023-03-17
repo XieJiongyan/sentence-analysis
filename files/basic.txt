@@ -8,9 +8,8 @@ class.+IsCntr classifier {
 
 class NonCntr {
     classifier BasicClassifier {
-        classNum == 1 => match (isReal) {
-            true => ObjectInWorld,
-            false => ThingsNotInWorld,
+        classNum == 1 => {
+            Object 
         },
         classNum > 1 && classNum != Infinity => match (makeChanges) {
             true => Motion,
@@ -20,16 +19,14 @@ class NonCntr {
     }
 }
 
-class ObjectInWorld
-class ThingsNotInWorld
+class Object classifier {
+    match (isReal) {
+        true => ObjectInWorld,
+        false => ThingsNotInWorld,
+    }
+}
+class ObjectInWorld :Object
+class ThingsNotInWorld :Object
 class Motion
 class Connection
 class Value
-
-
-class Proposition.+IsTruth {
-    var isTrue :bool,
-    var isOtherSays :bool,
-    var sayer       :People,
-}
-

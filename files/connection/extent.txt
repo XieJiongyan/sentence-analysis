@@ -1,0 +1,19 @@
+class Extent :Connection {
+    classifier Common {
+        Strongly,
+        Softly,
+        Hardly,
+        Deeply
+    }
+}
+
+class ExtentConnection :Connection {
+    var extent
+}
+
+class Affect :ExtentConnection {
+}
+
+class.+Affect {
+    cls affect(Class) Affect
+}
