@@ -1,11 +1,13 @@
 use std::{fmt, collections::HashMap};
 
-use crate::{class::{parse_class, Class}, utils::package_name::PackageName};
+use crate::{class::{parse_class, Class}, utils::package_name::PackageName, cls::Cls};
 
 fn _parse(i: &str) -> Memory {
     let class_list = HashMap::new();
+    let cls_list = HashMap::new();
     let mut memory = Memory {
-        class_list, 
+        classes: class_list, 
+        cls_list,
     };
     let mut i = i;
     loop {
@@ -15,23 +17,24 @@ fn _parse(i: &str) -> Memory {
         }
         let (remaining_input, class) = result.unwrap();
         let class_id = class.get_package_name();
-        if memory.class_list.contains_key(&class_id) {
+        if memory.classes.contains_key(&class_id) {
             panic!("Already have this id")
         } 
-        memory.class_list.insert(class_id, class);
+        memory.classes.insert(class_id, class);
         i = remaining_input.trim_start();
     }
     memory
 }
 
 struct Memory {
-    class_list: HashMap<PackageName, Class>, //"package.class" -> class
+    classes: HashMap<PackageName, Class>, //"package.class" -> class
+    cls_list :HashMap<PackageName, Cls>
 }
 
 impl fmt::Display for Memory {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut result = String::new();
-        for (_, class) in &self.class_list {
+        for (_, class) in &self.classes {
             result += &format!("{}\n", class);
         }
         write!(f, "{}", result)
@@ -40,7 +43,7 @@ impl fmt::Display for Memory {
 
 impl Memory {
     pub fn get_class(&self, class_id: &PackageName) -> Result<&Class, String> {
-        Ok(self.class_list.get(class_id).unwrap_or_else(|| {
+        Ok(self.classes.get(class_id).unwrap_or_else(|| {
             panic!("Error Get Class");
         }))
     }

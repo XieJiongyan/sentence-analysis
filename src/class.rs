@@ -7,6 +7,7 @@ use nom::sequence::{preceded, delimited};
 use nom::multi::many0;
 use nom::combinator::opt;
 
+use crate::cls::Cls;
 use crate::var::{Var, parse_vars};
 use crate::name::parse_name;
 use crate::utils::package_name::PackageName;
@@ -34,7 +35,7 @@ impl fmt::Display for Class {
     }
 }
 
-pub fn parse_class(i: &str) -> IResult<&str, Class> {
+pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<Cls>)> {
     let (
         remaining_input,
         (_, _, class_name, inherits, vars)
