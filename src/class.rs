@@ -2,19 +2,18 @@ use std::fmt;
 
 use nom::{IResult, sequence::tuple};
 use nom::bytes::complete::tag;
-use nom::character::complete::{multispace1, multispace0, alpha1};
+use nom::character::complete::{multispace1, multispace0};
 use nom::sequence::{preceded, delimited};
 use nom::multi::many0;
 use nom::combinator::opt;
 
 use crate::var::{Var, parse_vars};
 use crate::name::parse_name;
-use crate::utils::class_id::ClassId;
+use crate::utils::package_name::PackageName;
 
 pub struct Class {
     pub name: String,
-    pub id  : String,
-    pub inherits: Vec<ClassId>, 
+    pub inherits: Vec<PackageName>, 
     pub vars: Vec<Var>
 }
 
@@ -54,16 +53,22 @@ pub fn parse_class(i: &str) -> IResult<&str, Class> {
         )),
     ))(i)?;
 
-    let id = class_name.clone(); //FIXME get right id
     let inherits = inherits
         .iter()
-        .map(|c| ClassId::from(c.to_string())) //FIXME get right class ID
+        .map(|c| PackageName::from(c.to_string())) //FIXME get right class ID
         .collect();
     let vars = vars.unwrap_or(vec![]);
-    let class = Class{name: class_name, id, inherits, vars};
+    let class = Class{name: class_name, inherits, vars};
     Ok((remaining_input, class))
 }
 
+impl Class {
+    /// 预计是 package.name 格式
+    /// 
+    pub fn get_package_name(&self) -> PackageName {
+        return PackageName::from(format!("base.{}", self.name))
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -72,14 +77,13 @@ mod tests {
     #[test]
     fn test1() {
         let name = String::from("ObjectInWord");
-        let id = String::from("basic::ObjectInWord");
         let inherits = vec!["NonCntr"];
         let inherits = inherits
             .iter()
-            .map(|c| ClassId::from(c.to_string()))
+            .map(|c| PackageName::from(c.to_string()))
             .collect();
         let vars = vec![];
-        let class = Class{ name, id, inherits, vars };
+        let class = Class{ name, inherits, vars };
         assert_eq!(format!("{}", class), "class ObjectInWord :NonCntr");
     }
 
@@ -103,23 +107,22 @@ mod tests {
     #[test]
     fn test4() {
         let name = "TakeTraffic".to_owned();
-        let id = "common.traffic.TakeTraffic".to_owned();
-        let inherits = vec![ClassId::from("PeopleAction")];
+        let inherits = vec![PackageName::from("PeopleAction")];
         let vars = vec![
             Var{
                 name: "startPlace".to_owned(),
-                inherits: vec![ClassId::from("common.place.Place")]
+                inherits: vec![PackageName::from("common.place.Place")]
             },
             Var{
                 name: "endPlace".to_owned(),
-                inherits: vec![ClassId::from("common.place.Place")]
+                inherits: vec![PackageName::from("common.place.Place")]
             },
             Var{
                 name: "vehicle".to_owned(),
-                inherits: vec![ClassId::from("common.traffic.Vehicle")]
+                inherits: vec![PackageName::from("common.traffic.Vehicle")]
             },
         ];
-        let class = Class{name, id, inherits, vars};
+        let class = Class{name, inherits, vars};
         let expected = "
 class TakeTraffic :PeopleAction {
   var startPlace :Place

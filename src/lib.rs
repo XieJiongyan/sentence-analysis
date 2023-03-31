@@ -6,3 +6,5 @@ pub mod utils;
 pub mod name;
 //TODO a new mod View
 //TODO a new mod Val
+
+pub mod cls;
