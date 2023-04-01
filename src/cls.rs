@@ -1,6 +1,8 @@
 use std::fmt;
 
-use crate::utils::package_name::PackageName;
+use nom::{IResult, sequence::{tuple, terminated, delimited, preceded}, character::complete::{multispace1, multispace0}, multi::{many1, many0}, bytes::complete::tag};
+
+use crate::{utils::package_name::PackageName, name::parse_name};
 
 pub struct Cls {
     pub name :String,
@@ -27,6 +29,45 @@ impl fmt::Display for Cls {
         }
         Ok(())
     }
+}
+
+fn parse_cls(i: &str) -> IResult<&str, Cls> {
+    let (
+        remaining_input,
+        (_, _, name, _, parameters, _, inherits)
+    ) = tuple((
+        tag("cls"),
+        multispace1,
+        parse_name,
+        delimited(
+            multispace0,
+            tag("("),
+            multispace0,
+        ),
+        many0 (
+            terminated(
+                parse_name, 
+                delimited(multispace0, tag(","), multispace0)
+            )
+        ),
+        tag(")"),
+        many1(
+            preceded(
+                delimited(multispace0, tag(":"), multispace0),
+                parse_name
+            )
+        )
+    ))(i)?;
+
+    let parameters = parameters
+        .iter()
+        .map(move |s| PackageName{id: s.to_owned()})
+        .collect();
+    let inherits = inherits
+        .iter()
+        .map(move |s| PackageName{id: s.to_owned()})
+        .collect();
+    
 }
 
 #[cfg(test)]
