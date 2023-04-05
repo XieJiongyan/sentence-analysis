@@ -1,21 +1,23 @@
 use std::fmt;
 
+use nom::branch::{permutation, alt};
 use nom::{IResult, sequence::tuple};
 use nom::bytes::complete::tag;
 use nom::character::complete::{multispace1, multispace0};
-use nom::sequence::{preceded, delimited};
+use nom::sequence::{preceded, delimited, terminated};
 use nom::multi::many0;
-use nom::combinator::opt;
+use nom::combinator::{opt, map};
 
-use crate::cls::Cls;
-use crate::var::{Var, parse_vars};
+use crate::cls::{Cls, parse_cls};
+use crate::var::{Var, parse_vars, parse_var_member};
 use crate::name::parse_name;
 use crate::utils::package_name::PackageName;
 
 pub struct Class {
     pub name: String,
     pub inherits: Vec<PackageName>, 
-    pub vars: Vec<Var>
+    pub vars: Vec<Var>,
+    pub cls_iz : Vec<PackageName>,
 }
 
 impl fmt::Display for Class {
@@ -35,10 +37,11 @@ impl fmt::Display for Class {
     }
 }
 
+///在这一步中, cls 设置好 super_cid
 pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<Cls>)> {
     let (
         remaining_input,
-        (_, _, class_name, inherits, vars)
+        (_, _, class_name, inherits, members)
     ) = tuple((
         tag("class"),
         multispace1,
@@ -49,7 +52,7 @@ pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<Cls>)> {
         )),
         opt (delimited(
             tuple((multispace0, tag("{"), multispace0)), 
-            parse_vars, 
+            parse_class_member, 
             tuple((multispace0, tag("}"), multispace0)),
         )),
     ))(i)?;
@@ -63,6 +66,36 @@ pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<Cls>)> {
     Ok((remaining_input, class))
 }
 
+enum ClassMember {
+    ClsMember(Cls),
+    VarMember(Var),
+}
+fn parse_a_class_member(i: &str) -> IResult<&str, ClassMember> {
+    alt((
+        map(
+            terminated(parse_var_member, multispace0),
+            |e| {ClassMember::VarMember(e)}
+        ),
+        map(
+            terminated(parse_cls, multispace0),
+            |e| {ClassMember::ClsMember(e)}
+        ),
+    ))(i)
+}
+fn parse_class_member(i: &str) -> IResult<&str, (Vec<Var>, Vec<Cls>)> {
+    let (remaining_output, class_members) = many0(parse_a_class_member)(i)?;
+
+    let mut var_vec = vec![];
+    let mut cls_vec = vec![];
+
+    for cls_member in class_members {
+        match cls_member {
+            ClassMember::ClsMember(cls) => {cls_vec.push(cls);},
+            ClassMember::VarMember(var) => {var_vec.push(var);},
+        }
+    }
+    Ok((remaining_output, (var_vec, cls_vec)))
+}
 impl Class {
     /// 预计是 package.name 格式
     /// 

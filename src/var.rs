@@ -27,7 +27,7 @@ impl fmt::Display for Var {
     }
 }
 
-fn parse_var_member(i: &str) -> IResult<&str, Var> {
+pub fn parse_var_member(i: &str) -> IResult<&str, Var> {
     let (
         remaining_input,
         (_, _, name, inherits)
@@ -48,6 +48,7 @@ fn parse_var_member(i: &str) -> IResult<&str, Var> {
     Ok((remaining_input, var_member))
 }
 
+///TODO: 删除这个, 并让他可以
 pub fn parse_vars(i: &str) -> IResult<&str, Vec<Var>> {
     Ok(many0(terminated(parse_var_member, multispace0))(i)?)
 }

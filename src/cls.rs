@@ -6,7 +6,7 @@ use crate::{utils::package_name::PackageName, name::parse_name};
 
 pub struct Cls {
     pub name :String,
-    pub super_cid : PackageName,
+    pub super_cid : Option<PackageName>,
     pub inherit_ciz :Vec<PackageName>, //inherit_class_ids
     pub parameter_ciz :Vec<PackageName>, //parameter_class_ids
 }
@@ -31,7 +31,9 @@ impl fmt::Display for Cls {
     }
 }
 
-fn parse_cls(i: &str) -> IResult<&str, Cls> {
+///
+/// 经过 parse_cls 之后 super_cid 还为空
+pub fn parse_cls(i: &str) -> IResult<&str, Cls> {
     let (
         remaining_input,
         (_, _, name, _, parameters, _, inherits)
@@ -59,14 +61,22 @@ fn parse_cls(i: &str) -> IResult<&str, Cls> {
         )
     ))(i)?;
 
-    let parameters = parameters
+    let parameter_ciz = parameters
         .iter()
         .map(move |s| PackageName{id: s.to_owned()})
         .collect();
-    let inherits = inherits
+    let inherit_ciz = inherits
         .iter()
         .map(move |s| PackageName{id: s.to_owned()})
         .collect();
+
+    let cls = Cls {
+        name,
+        super_cid : None,
+        inherit_ciz,
+        parameter_ciz
+    };
+    Ok((remaining_input, cls))
     
 }
 
@@ -79,7 +89,7 @@ mod tests {
         let name = "Deny".to_string();
         let inherit_ciz = vec![PackageName::from("PeopleAction")];
         let parameter_ciz = vec![PackageName::from("Proposition")];
-        let super_cid = PackageName::from("People");
+        let super_cid = Some(PackageName::from("People"));
         let cls = Cls {
             name,
             super_cid,
@@ -90,5 +100,18 @@ mod tests {
         let expected = "cls Deny(Proposition) :PeopleAction";
 
         assert_eq!(expected, format!("{}", cls))
+    }
+
+    #[test]
+    fn test2() {
+        let file = "cls Deny(Proposition)  :PeopleAction";
+        let (remaining_input, cls) = parse_cls(file).unwrap();
+        assert_eq!(remaining_input, "");
+        assert_eq!(cls.name, "Deny");
+        assert!(cls.super_cid == None);
+        assert_eq!(cls.inherit_ciz.len(), 1);
+        assert_eq!(cls.inherit_ciz[0].get_name(), "PeopleAction");
+        assert_eq!(cls.parameter_ciz.len(), 1);
+        assert_eq!(cls.parameter_ciz[0].get_name(), "Proposition");
     }
 }
