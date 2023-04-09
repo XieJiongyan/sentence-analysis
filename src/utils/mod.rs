@@ -1,1 +1,1 @@
-pub mod package_name;
+pub mod class_id;

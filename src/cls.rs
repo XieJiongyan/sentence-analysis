@@ -2,13 +2,14 @@ use std::fmt;
 
 use nom::{IResult, sequence::{tuple, terminated, delimited, preceded}, character::complete::{multispace1, multispace0}, multi::{many1, many0}, bytes::complete::tag};
 
-use crate::{utils::package_name::PackageName, name::parse_name};
+use crate::{utils::class_id::ClassId, name::parse_name};
 
+#[derive(Clone)]
 pub struct Cls {
     pub name :String,
-    pub super_cid : Option<PackageName>,
-    pub inherit_ciz :Vec<PackageName>, //inherit_class_ids
-    pub parameter_ciz :Vec<PackageName>, //parameter_class_ids
+    pub super_cid : Option<ClassId>,
+    pub inherit_ciz :Vec<ClassId>, //inherit_class_ids
+    pub parameter_ciz :Vec<ClassId>, //parameter_class_ids
 }
 
 impl fmt::Display for Cls {
@@ -63,11 +64,11 @@ pub fn parse_cls(i: &str) -> IResult<&str, Cls> {
 
     let parameter_ciz = parameters
         .iter()
-        .map(move |s| PackageName{id: s.to_owned()})
+        .map(move |s| ClassId::from(s))
         .collect();
     let inherit_ciz = inherits
         .iter()
-        .map(move |s| PackageName{id: s.to_owned()})
+        .map(move |s| ClassId::from(s))
         .collect();
 
     let cls = Cls {
@@ -80,6 +81,14 @@ pub fn parse_cls(i: &str) -> IResult<&str, Cls> {
     
 }
 
+impl Cls {
+    pub fn get_id(&self) -> ClassId {
+        let mut package_name = ClassId::from(&self.name);
+        package_name.super_cid = Some(self.super_cid.as_ref().unwrap().get_name().to_owned());
+        package_name
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -87,9 +96,9 @@ mod tests {
     #[test]
     fn test1() {
         let name = "Deny".to_string();
-        let inherit_ciz = vec![PackageName::from("PeopleAction")];
-        let parameter_ciz = vec![PackageName::from("Proposition")];
-        let super_cid = Some(PackageName::from("People"));
+        let inherit_ciz = vec![ClassId::from("PeopleAction")];
+        let parameter_ciz = vec![ClassId::from("Proposition")];
+        let super_cid = Some(ClassId::from("People"));
         let cls = Cls {
             name,
             super_cid,

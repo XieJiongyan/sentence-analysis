@@ -4,16 +4,16 @@ use nom::{IResult, sequence::tuple};
 use nom::multi::many0;
 use nom::bytes::complete::tag;
 use crate::name::parse_name;
-use crate::utils::package_name::PackageName;
+use crate::utils::class_id::ClassId;
 use nom::sequence::{preceded, delimited, terminated};
 use nom::character::complete::{multispace1, multispace0};
 
 
 ///member in class, not member variables in variable
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub struct Var {
     pub name: String,
-    pub inherits: Vec<PackageName>, //There are (class.id, class.name) in the vec 
+    pub inherits: Vec<ClassId>, //There are (class.id, class.name) in the vec 
     //TODO add parameter
 }
 
@@ -42,7 +42,7 @@ pub fn parse_var_member(i: &str) -> IResult<&str, Var> {
     ))(i)?;
     let inherits = inherits
         .iter()
-        .map(move |s| PackageName{id: s.to_owned()})
+        .map(move |s| ClassId::from(s))
         .collect();
     let var_member = Var{name, inherits};
     Ok((remaining_input, var_member))
@@ -59,7 +59,7 @@ mod tests {
     #[test]
     fn test1() {
         let name = "startPlace".to_owned();
-        let inherit = PackageName{id: "Place".to_owned()};
+        let inherit = ClassId::from("Place");
         let inherits = vec![inherit];
         let var_member = Var {name, inherits};
         assert_eq!(format!("{}", var_member), "var startPlace :Place");
@@ -73,7 +73,7 @@ mod tests {
         assert_eq!(vars.len(), 2);
         let var_member = Var{
             name: "startPlace".to_owned(),
-            inherits: vec![PackageName::from("Place")],
+            inherits: vec![ClassId::from("Place")],
         };
         assert!(vars.get(0).unwrap() == &var_member);
     }

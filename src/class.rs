@@ -1,6 +1,6 @@
 use std::fmt;
 
-use nom::branch::{permutation, alt};
+use nom::branch::alt;
 use nom::{IResult, sequence::tuple};
 use nom::bytes::complete::tag;
 use nom::character::complete::{multispace1, multispace0};
@@ -8,16 +8,15 @@ use nom::sequence::{preceded, delimited, terminated};
 use nom::multi::many0;
 use nom::combinator::{opt, map};
 
-use crate::cls::{Cls, parse_cls};
-use crate::var::{Var, parse_vars, parse_var_member};
+use crate::class_member::{parse_class_member, ClassMember};
+use crate::cls::Cls;
 use crate::name::parse_name;
-use crate::utils::package_name::PackageName;
+use crate::utils::class_id::ClassId;
 
 pub struct Class {
     pub name: String,
-    pub inherits: Vec<PackageName>, 
-    pub vars: Vec<Var>,
-    pub cls_iz : Vec<PackageName>,
+    pub inherits: Vec<ClassId>, 
+    pub members: Vec<ClassMember>, //使用时可以直接用, 
 }
 
 impl fmt::Display for Class {
@@ -26,10 +25,10 @@ impl fmt::Display for Class {
         for inherit in &self.inherits {
             write!(f, " :{}", inherit.get_name())?;
         }
-        if self.vars.len() > 0 {
+        if self.members.len() > 0 {
             write!(f, " {{\n")?;
-            for var_member in &self.vars {
-                write!(f, "  {}\n", var_member)?;
+            for member in &self.members {
+                write!(f, "  {}\n", member)?;
             }
             write!(f, "}}")?;
         }
@@ -37,8 +36,15 @@ impl fmt::Display for Class {
     }
 }
 
-///在这一步中, cls 设置好 super_cid
-pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<Cls>)> {
+impl Class {
+    pub fn get_cid(&self) -> ClassId {
+        ClassId::from(&self.name)
+    }
+}
+
+/// 在这一步中, cls 设置好 super_cid
+/// 返回 Class 和他所有的 Cls
+pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<ClassId>)> {
     let (
         remaining_input,
         (_, _, class_name, inherits, members)
@@ -52,60 +58,49 @@ pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<Cls>)> {
         )),
         opt (delimited(
             tuple((multispace0, tag("{"), multispace0)), 
-            parse_class_member, 
+            parse_class_members, 
             tuple((multispace0, tag("}"), multispace0)),
         )),
     ))(i)?;
 
     let inherits = inherits
         .iter()
-        .map(|c| PackageName::from(c.to_string())) //FIXME get right class ID
+        .map(|c| ClassId::from(c)) //FIXME get right class ID
         .collect();
-    let vars = vars.unwrap_or(vec![]);
-    let class = Class{name: class_name, inherits, vars};
-    Ok((remaining_input, class))
+    let mut members = members.unwrap();
+    let mut cls_iz: Vec<ClassId> = vec![];
+
+    let members: Vec<ClassMember> = members
+        .iter()
+        .map(|c| match c {
+            ClassMember::ClsMember(cls) => {
+                let mut cls = cls.clone();
+                cls.super_cid = Some(ClassId::from(&class_name));
+                cls_iz.push(cls.get_id());
+                ClassMember::ClsMember(cls)
+            }
+            x => x.clone(),
+        })
+        .collect();
+    let class = Class{name: class_name, inherits, members};
+    Ok((remaining_input, (class, cls_iz)))
 }
 
-enum ClassMember {
-    ClsMember(Cls),
-    VarMember(Var),
-}
-fn parse_a_class_member(i: &str) -> IResult<&str, ClassMember> {
-    alt((
-        map(
-            terminated(parse_var_member, multispace0),
-            |e| {ClassMember::VarMember(e)}
-        ),
-        map(
-            terminated(parse_cls, multispace0),
-            |e| {ClassMember::ClsMember(e)}
-        ),
-    ))(i)
-}
-fn parse_class_member(i: &str) -> IResult<&str, (Vec<Var>, Vec<Cls>)> {
-    let (remaining_output, class_members) = many0(parse_a_class_member)(i)?;
-
-    let mut var_vec = vec![];
-    let mut cls_vec = vec![];
-
-    for cls_member in class_members {
-        match cls_member {
-            ClassMember::ClsMember(cls) => {cls_vec.push(cls);},
-            ClassMember::VarMember(var) => {var_vec.push(var);},
-        }
-    }
-    Ok((remaining_output, (var_vec, cls_vec)))
+fn parse_class_members(i: &str) -> IResult<&str, Vec<ClassMember>> {
+    many0(parse_class_member)(i)
 }
 impl Class {
     /// 预计是 package.name 格式
     /// 
-    pub fn get_package_name(&self) -> PackageName {
-        return PackageName::from(format!("base.{}", self.name))
+    pub fn get_package_name(&self) -> ClassId {
+        return ClassId::from(&format!("base.{}", self.name))
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::var::Var;
+
     use super::*;
 
     #[test]
@@ -114,17 +109,17 @@ mod tests {
         let inherits = vec!["NonCntr"];
         let inherits = inherits
             .iter()
-            .map(|c| PackageName::from(c.to_string()))
+            .map(|c| ClassId::from(*c))
             .collect();
-        let vars = vec![];
-        let class = Class{ name, inherits, vars };
+        let members = vec![];
+        let class = Class{ name, inherits, members,};
         assert_eq!(format!("{}", class), "class ObjectInWord :NonCntr");
     }
 
     #[test]
     fn test2() {
         let result = parse_class("class NonCntr1 ").unwrap();
-        let class = result.1;
+        let class = result.1.0;
         assert_eq!(format!("{}", class), "class NonCntr1");
         assert_eq!(result.0, " ");
     }
@@ -133,7 +128,7 @@ mod tests {
     fn test3() {
         let file = "class ObjectInWorld: NonCntr {}";
         let result = parse_class(file).unwrap();
-        let class = result.1;
+        let class = result.1.0;
         assert_eq!(format!("{}", class), "class ObjectInWorld :NonCntr");
     }
 
@@ -141,22 +136,23 @@ mod tests {
     #[test]
     fn test4() {
         let name = "TakeTraffic".to_owned();
-        let inherits = vec![PackageName::from("PeopleAction")];
+        let inherits = vec![ClassId::from("PeopleAction")];
         let vars = vec![
             Var{
                 name: "startPlace".to_owned(),
-                inherits: vec![PackageName::from("common.place.Place")]
+                inherits: vec![ClassId::from("common.place.Place")]
             },
             Var{
                 name: "endPlace".to_owned(),
-                inherits: vec![PackageName::from("common.place.Place")]
+                inherits: vec![ClassId::from("common.place.Place")]
             },
             Var{
                 name: "vehicle".to_owned(),
-                inherits: vec![PackageName::from("common.traffic.Vehicle")]
+                inherits: vec![ClassId::from("common.traffic.Vehicle")]
             },
         ];
-        let class = Class{name, inherits, vars};
+        let members = vars.iter().map(|var| ClassMember::VarMember(var.clone())).collect();
+        let class = Class{name, inherits, members};
         let expected = "
 class TakeTraffic :PeopleAction {
   var startPlace :Place
@@ -179,7 +175,7 @@ class TakeTraffic :PeopleAction {
 }
         ".trim();
         let result = parse_class(file).unwrap();
-        let class = result.1;
+        let class = result.1.0;
         let output = format!("{}", class);
         let output = output.trim();
         assert_eq!(output, file);

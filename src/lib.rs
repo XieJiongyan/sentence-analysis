@@ -8,3 +8,4 @@ pub mod name;
 //TODO a new mod Val
 
 pub mod cls;
+pub mod class_member;
