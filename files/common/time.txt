@@ -2,8 +2,11 @@ class Duration :ObjectInWorld
 
 class ForALongTime :Duration
 
-class Time :ObjectInWorld {//FIXME might not right 
-    var when(proposition) :Connection
+/*
+    时间，时候
+*/
+class Time^1 {
+    cls when(proposition) :Connection
     var duration
     var isBefore :AbsoluteProposition
 }
@@ -12,4 +15,11 @@ class People.+WillDo {
     peopleAction : cntr[PeopleAction]
 }
 
-final now :Time
+final now :Time^1
+
+/*
+    时代，时期
+*/
+class Time^2 {
+
+}

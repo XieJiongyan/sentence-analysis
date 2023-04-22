@@ -1,0 +1,10 @@
+/// 运算符
+class Operation^1 :ThingsNotInWorld
+
+class Add^1 :Operation^1
+
+class Minus^1 :Operation^1
+
+class Times :Operation^1
+
+class Devide :Operation^1

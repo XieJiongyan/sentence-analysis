@@ -1,0 +1,12 @@
+class GoodAndBad :ThingsNotInWorld
+
+class Well^2    :GoodAndBad
+class Good^1    :GoodAndBad
+class Bad       :GoodAndBad
+class Perfect   :GoodAndBad
+class Excellect :GoodAndBad
+class Great     :GoodAndBad 
+
+class.+GoodAndBad {
+    var goodAndBad
+}

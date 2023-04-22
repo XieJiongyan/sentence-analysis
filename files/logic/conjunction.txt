@@ -1,2 +1,45 @@
-class Conjunction :Connection
+class UnarySentenceConjunction :Connection {
+    var connection
+}
 
+class And^1      :SentenceConjunction
+class But^1      :SentenceConjunction
+class AsWell     :SentenceConjunction
+class However    :SentenceConjunction
+class InAddition :SentenceConjunction
+class Except^1   :SentenceConjunction
+class For^1      :SentenceConjunction
+class Nor^1      :SentenceConjunction
+class Or^1       :SentenceConjunction
+class So^1       :SentenceConjunction
+class Yet^1      :SentenceConjunction 
+
+class BinarySentenceConjunction :Connection {
+    var connection1
+    var connection2
+}
+
+class Either_Or :BinarySentenceConjunction
+class NotOnly_But :BinarySentenceConjunction
+class NotOnly_ButAlso :BinarySentenceConjunction
+class Neither_Nor :BinarySentenceConjunction
+class Whether_Or :BinarySentenceConjunction
+class JustAs_So :BinarySentenceConjunction
+class The_The :BinarySentenceConjunction
+class As_As :BinarySentenceConjunction
+class NoSooner_Than :BinarySentenceConjunction
+class Not_ButRather :BinarySentenceConjunction
+
+class UnaryWordConjuction :Connection {
+    var class
+}
+
+class AsWellAs :UnaryWordConjuction
+
+class BinaryWordConjunction :Connection {
+    var class1
+    var class2
+}
+
+class Both_And :BinaryWordConjunction
+class Rather_Than :BinaryWordConjunction
