@@ -36,10 +36,3 @@ class UnaryWordConjuction :Connection {
 
 class AsWellAs :UnaryWordConjuction
 
-class BinaryWordConjunction :Connection {
-    var class1
-    var class2
-}
-
-class Both_And :BinaryWordConjunction
-class Rather_Than :BinaryWordConjunction

@@ -10,7 +10,7 @@ use nom::character::complete::{multispace1, multispace0};
 
 
 ///member in class, not member variables in variable
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub struct Var {
     pub name: String,
     pub inherits: Vec<ClassId>, //There are (class.id, class.name) in the vec 
@@ -27,7 +27,7 @@ impl fmt::Display for Var {
     }
 }
 
-fn parse_var_member(i: &str) -> IResult<&str, Var> {
+pub fn parse_var_member(i: &str) -> IResult<&str, Var> {
     let (
         remaining_input,
         (_, _, name, inherits)
@@ -42,12 +42,13 @@ fn parse_var_member(i: &str) -> IResult<&str, Var> {
     ))(i)?;
     let inherits = inherits
         .iter()
-        .map(move |s| ClassId{id: s.to_owned()})
+        .map(move |s| ClassId::from(s))
         .collect();
     let var_member = Var{name, inherits};
     Ok((remaining_input, var_member))
 }
 
+///TODO: 删除这个, 并让他可以
 pub fn parse_vars(i: &str) -> IResult<&str, Vec<Var>> {
     Ok(many0(terminated(parse_var_member, multispace0))(i)?)
 }
@@ -58,7 +59,7 @@ mod tests {
     #[test]
     fn test1() {
         let name = "startPlace".to_owned();
-        let inherit = ClassId{id: "Place".to_owned()};
+        let inherit = ClassId::from("Place");
         let inherits = vec![inherit];
         let var_member = Var {name, inherits};
         assert_eq!(format!("{}", var_member), "var startPlace :Place");

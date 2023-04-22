@@ -1,8 +1,15 @@
 class PersonalPronoun :People
 
-let me   :PersonalPronoun
-let I    :PersonalPronoun
+let me    :PersonalPronoun
+let I     :PersonalPronoun
+let mine  :PersonalPronoun
 
-let it   :PersonalPronoun
+let it    :PersonalPronoun
 
-let they :PersonalPronoun
+let we    :PersonalPronoun
+let our   :PersonalPronoun
+let us    :PersonalPronoun
+
+let they  :PersonalPronoun
+let these :PersonalPronoun
+let their :PersonalPronoun

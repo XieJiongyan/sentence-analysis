@@ -1,6 +1,6 @@
 class Action : Motion {
-    var time : cntr[Time]
-    var place: cntr[Place]
+    var time
+    var place
     
     var freaquency
 
