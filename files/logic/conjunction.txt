@@ -1,5 +1,5 @@
 class UnarySentenceConjunction :Connection {
-    var connection
+    var sentence Connection
 }
 
 class And^1      :UnarySentenceConjunction
@@ -36,3 +36,14 @@ class UnaryWordConjuction :Connection {
 
 class AsWellAs :UnaryWordConjuction
 
+class BinaryWordConjunction :Connection {
+    var object1 class
+    var object2 class
+}
+
+class MultiWordConjunction :Conjunction {
+    var things []class
+}
+
+class And^2 :MultiWordConjunction
+class Or^2 :MultiWordConjunction

@@ -1,7 +1,16 @@
-class Duration :ObjectInWorld
+class Duration :ObjectInWorld: RealNumberQuantity
 
-class ForALongTime :Duration
-
+class ALongTime     :Duration
+class Century^1     :Duration
+class Year^1        :Duration 
+class Month^1       :Duration
+class Season^1      :Duration 
+class Week^1        :Duration
+class Day^1         :Duration
+class Hour^1        :Duration
+class Minute^1      :Duration
+class Second^1      :Duration
+class Mellisecond^1 :Duration
 /*
     时间，时候
 */
@@ -9,6 +18,8 @@ class Time^1 {
     cls when(proposition) :Connection
     var duration
     var isBefore :AbsoluteProposition
+
+    var for(Duration) :Proposition
 }
 
 class People.+WillDo {

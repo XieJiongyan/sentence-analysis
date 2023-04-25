@@ -27,6 +27,7 @@ class Object classifier {
 }
 class ObjectInWorld :Object
 class ThingsNotInWorld :Object
+class AbstractClass :ThingsNotInWorld
 class Motion
 class Connection
 class Value

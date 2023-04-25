@@ -1,0 +1,3 @@
+class.+AdjI {
+    var isIntimate: Proposition
+}
