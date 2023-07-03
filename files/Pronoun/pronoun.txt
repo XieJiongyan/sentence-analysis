@@ -3,4 +3,4 @@ class Pronoun: ObjectInWorld
 class _WherePronoun: Pronoun
 class _NoPronoun:    Pronoun
 
-class NoWhere :_WherePronoun :_NoPronoun
+let NoWhere :_WherePronoun :_NoPronoun
