@@ -67,7 +67,7 @@ pub fn parse_class(i: &str) -> IResult<&str, (Class, Vec<ClassId>)> {
         .iter()
         .map(|c| ClassId::from(c)) //FIXME get right class ID
         .collect();
-    let mut members = members.unwrap();
+    let members = members.unwrap_or(vec![]);
     let mut cls_iz: Vec<ClassId> = vec![];
 
     let members: Vec<ClassMember> = members
