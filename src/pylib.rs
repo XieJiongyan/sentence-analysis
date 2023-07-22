@@ -39,4 +39,15 @@ mod tests {
         assert_eq!(".", tags[5].0);
         assert_eq!(".", tags[5].1);
     }
+
+    #[test]
+    fn test2() {
+        let tags = get_tag(
+            "Got a book."
+        ).unwrap();
+        println!("\n");
+        for tag in &tags {
+            println!("{:10}: {}", tag.0, tag.1);
+        }
+    }
 }
