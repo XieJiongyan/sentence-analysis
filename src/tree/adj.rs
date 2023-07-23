@@ -22,7 +22,6 @@ mod tests {
     fn test1() {
         let tagged = vec![("better", "PRP$"), ("one", "CD")];
         let tagged = Tagged::from(tagged);
-        // println!("{:?}", adj(tagged));
         let (remaining_input, adj) = adj(tagged).unwrap();
 
         let expected_input = Tagged::from(vec![("one", "CD")]);
