@@ -1,33 +1,28 @@
-
+mod adj;
+mod tagged;
+use crate::tree::TreeNode::{IsLeaf, NotLeaf};
 pub enum TreeType {
     Noun = 1,
     Adj = 2,
     Sentence = 4,
     Adv = 8, //状语从句，e.t. in the morning
+    HasAdv = 16,
+    HasCC = 32, //有 and, to 等连词
 }
+#[derive(Debug)]
 pub struct Tree {
     tree_type: u64,
     tree_nodes: Vec<TreeNode>,
 }
-
-pub struct Leaf {
-    tag: String,
-    word: String,
-}
-pub enum TreeNode {
-    Tree(Tree),
-    Leaf(Leaf),
-}  
-
 impl Tree {
     pub fn words(&self) -> String {
         let mut ret = String::new();
         for tree_node in &self.tree_nodes {
             ret += match tree_node {
-                TreeNode::Tree(x) => {
+                NotLeaf(x) => {
                     x.words()
                 },
-                TreeNode::Leaf(x) => {
+                IsLeaf(x) => {
                     x.word.clone() + " "
                 },
             }.as_str();
@@ -35,6 +30,31 @@ impl Tree {
         ret
     }
 }
+impl PartialEq for Tree {
+    fn eq(&self, other: &Self) -> bool {
+        if self.tree_nodes.len() != other.tree_nodes.len() {
+            return false;
+        }
+        
+        self.tree_type == other.tree_type && self.tree_nodes == other.tree_nodes
+    }
+}
+#[derive(Debug, PartialEq)]
+struct Leaf {
+    word: String,
+    tag: String,
+}
+
+impl From<(&str, &str)> for Leaf {
+    fn from((word, tag): (&str, &str)) -> Self {
+        Self { word: word.to_owned() , tag: tag.to_owned() }
+    }
+}
+#[derive(Debug, PartialEq)]
+enum TreeNode {
+    NotLeaf(Tree),
+    IsLeaf(Leaf),
+}  
 
 #[cfg(test)] 
 mod tests {
@@ -48,11 +68,11 @@ mod tests {
 
         let tree1 = Tree{
             tree_type: TreeType::Noun as u64,
-            tree_nodes: vec![TreeNode::Leaf(leaf2), TreeNode::Leaf(leaf3)], 
+            tree_nodes: vec![TreeNode::IsLeaf(leaf2), TreeNode::IsLeaf(leaf3)], 
         };
         let tree2 = Tree {
             tree_type: TreeType::Sentence as u64,
-            tree_nodes: vec![TreeNode::Leaf(leaf1), TreeNode::Tree(tree1)],
+            tree_nodes: vec![TreeNode::IsLeaf(leaf1), TreeNode::NotLeaf(tree1)],
         };
         println!("{}", tree2.words());
         assert_eq!("Got a book ", tree2.words());
