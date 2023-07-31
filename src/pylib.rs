@@ -43,7 +43,7 @@ mod tests {
     #[test]
     fn test2() {
         let tags = get_tag(
-            "Got a book."
+            "These may be beliefs we’re aware of or unaware of, but they strongly affect what we want and whether we succeed in getting it."
         ).unwrap();
         println!("\n");
         for tag in &tags {

@@ -1,13 +1,15 @@
 mod adj;
+mod noun;
 mod tagged;
 use crate::tree::TreeNode::{IsLeaf, NotLeaf};
+
+use self::tagged::Tagged;
 pub enum TreeType {
     Noun = 1,
     Adj = 2,
-    Sentence = 4,
+    Verb = 4, // do
     Adv = 8, //状语从句，e.t. in the morning
-    HasAdv = 16,
-    HasCC = 32, //有 and, to 等连词
+    Sentence = 16,
 }
 #[derive(Debug)]
 pub struct Tree {
@@ -30,6 +32,7 @@ impl Tree {
         ret
     }
 }
+
 impl PartialEq for Tree {
     fn eq(&self, other: &Self) -> bool {
         if self.tree_nodes.len() != other.tree_nodes.len() {
@@ -39,8 +42,8 @@ impl PartialEq for Tree {
         self.tree_type == other.tree_type && self.tree_nodes == other.tree_nodes
     }
 }
-#[derive(Debug, PartialEq)]
-struct Leaf {
+#[derive(Debug, PartialEq, Clone)]
+pub struct Leaf {
     word: String,
     tag: String,
 }
@@ -55,6 +58,16 @@ enum TreeNode {
     NotLeaf(Tree),
     IsLeaf(Leaf),
 }  
+
+impl From<Tagged> for Vec<TreeNode> {
+    fn from(x: Tagged) -> Self {
+        let mut v = Vec::new();
+        for i in x.start..x.end {
+            v.push(IsLeaf(x.get(i)));
+        }
+        v
+    }
+}
 
 #[cfg(test)] 
 mod tests {
@@ -74,7 +87,6 @@ mod tests {
             tree_type: TreeType::Sentence as u64,
             tree_nodes: vec![TreeNode::IsLeaf(leaf1), TreeNode::NotLeaf(tree1)],
         };
-        println!("{}", tree2.words());
         assert_eq!("Got a book ", tree2.words());
     }
 }
