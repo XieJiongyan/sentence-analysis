@@ -1,15 +1,20 @@
 mod adj;
 mod noun;
 mod tagged;
+mod verb;
+mod sub_sentence;
 use crate::tree::TreeNode::{IsLeaf, NotLeaf};
 
 use self::tagged::Tagged;
 pub enum TreeType {
     Noun = 1,
     Adj = 2,
-    Verb = 4, // do
-    Adv = 8, //状语从句，e.t. in the morning
-    Sentence = 16,
+    Vi,
+    Vt,
+    Vj,
+    ToDo,
+    InNoun,
+    Sentence,
 }
 #[derive(Debug)]
 pub struct Tree {
@@ -58,6 +63,14 @@ enum TreeNode {
     NotLeaf(Tree),
     IsLeaf(Leaf),
 }  
+
+impl From<Tagged> for TreeNode {
+    fn from(tagged: Tagged) -> Self {
+        assert!(tagged.start + 1 == tagged.end);
+        let w = tagged.get_start();
+        IsLeaf(tagged.get_start().clone())
+    }
+}
 
 impl From<Tagged> for Vec<TreeNode> {
     fn from(x: Tagged) -> Self {

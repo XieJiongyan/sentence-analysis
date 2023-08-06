@@ -59,9 +59,11 @@ impl InputTake for Tagged {
     }
 
     fn take_split(&self, count: usize) -> (Self, Self) {
-        if self.start + count > self.end {
-            panic!("error take in InputTake impled by Tagged")
-        }
+        // if self.start + count > self.end {
+        //     println!("ops: {}, {}, {}", self.start, self.end, count);
+        //     panic!("error take in InputTake impled by Tagged")
+        // }
+        assert!(self.start + count <= self.end);
         (
             Tagged { sentence: Rc::clone(&self.sentence), start: self.start + count, end: self.end },
             Tagged { sentence: Rc::clone(&self.sentence), start: self.start, end: self.start + count },
@@ -71,11 +73,17 @@ impl InputTake for Tagged {
 
 impl Compare<&Tags> for Tagged {
     fn compare(&self, t: &Tags) -> nom::CompareResult {
-        let pos = self.sentence.iter().skip(self.start).zip(t.tags.iter()).position(|(a, b)| &a.tag != b);
+        let pos = self.sentence.iter().skip(self.start).zip(t.leafs.iter()).position(|(a, b)| {
+            if b.word.is_empty() {
+                a.tag != b.tag
+            } else {
+                a.word != b.word || a.tag != b.tag
+            }
+        });
         match pos {
             Some(_) => CompareResult::Error,
             None => {
-                if self.sentence.len() >= t.tags.len() {
+                if self.end - self.start >= t.leafs.len() {
                     CompareResult::Ok
                 } else {
                     CompareResult::Incomplete
@@ -91,29 +99,33 @@ impl Compare<&Tags> for Tagged {
 
 #[derive(Debug)]
 pub struct Tags {
-    tags: Vec<String>
+    pub leafs: Vec<Leaf>
 }
 
 impl From<String> for Tags {
     fn from(s: String) -> Self {
-        Tags { tags: vec![s] }
+        Tags { leafs: vec![Leaf{word: String::new(), tag: s}] }
     }
 }
 
 impl From<Vec<&str>> for Tags {
     fn from(v: Vec<&str>) -> Self {
-        Tags { tags: v.iter().map(|x| x.to_owned().to_owned()).collect() }
+        Tags { leafs: v.iter().map(|x| Leaf {
+            word: String::new(),
+            tag: x.to_owned().to_owned(),
+        }).collect() }
     }
 }
 
 impl InputLength for &Tags {
     fn input_len(&self) -> usize {
-        self.tags.len()
+        println!("len: {}", self.leafs.len());
+        self.leafs.len()
     }
 }
 
 impl Clone for Tags {
     fn clone(&self) -> Self {
-        Self { tags: self.tags.clone() }
+        Self { leafs: self.leafs.clone() }
     }
 }

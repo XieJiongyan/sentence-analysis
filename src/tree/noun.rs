@@ -1,6 +1,6 @@
-use nom::{IResult, branch::alt, bytes::complete::tag, sequence::tuple, combinator::opt};
+use nom::{IResult, branch::alt, bytes::complete::tag, sequence::tuple, combinator::{opt, map, peek, not}};
 
-use super::{Tree, tagged::{Tagged, Tags}, TreeType, adj, TreeNode};
+use super::{Tree, tagged::{Tagged, Tags}, TreeType, adj, TreeNode, Leaf};
 use crate::tree::TreeNode::NotLeaf;
 
 pub fn noun(i: Tagged) -> IResult<Tagged, Tree> {
@@ -38,22 +38,30 @@ fn dt(i: Tagged) -> IResult<Tagged, Tagged> {
 }
 
 fn noun_single(i: Tagged) -> IResult<Tagged, Tree> {
-    let (remaining_output, noun_single) = alt((
-        tag(&Tags::from(vec!["DT"])),
-        tag(&Tags::from(vec!["CD"])),
-        tag(&Tags::from(vec!["PRP"])),
-        tag(&Tags::from(vec!["NN"])),
-        tag(&Tags::from(vec!["NNS"])),
-    ))(i)?;
-    Ok((
-        remaining_output, 
-        Tree {tree_type: TreeType::Noun as u64, tree_nodes: Vec::<TreeNode>::from(noun_single)}
-    ))
+    let (i, _) = not(tag(&Tags{leafs: vec![Leaf{
+        word: "the".to_owned(), tag: "DT".to_owned()
+    }]}))(i)?;
+    println!("x");
+    Ok(map(
+        alt((
+            tag(&Tags::from(vec!["DT"])),
+            tag(&Tags::from(vec!["CD"])),
+            tag(&Tags::from(vec!["PRP"])),
+            tag(&Tags::from(vec!["NN"])),
+            tag(&Tags::from(vec!["NNS"])),
+        )),
+        |noun_single| Tree {
+            tree_type: TreeType::Noun as u64, 
+            tree_nodes: Vec::<TreeNode>::from(noun_single)
+        }
+    )(i)?)
 }
 
 #[cfg(test)]
 mod tests {
     
+
+    use nom::error::Error;
 
     use super::*;
 
@@ -74,5 +82,26 @@ mod tests {
         assert_eq!(TreeType::Noun as u64, noun.tree_type);
         assert_eq!(3, noun.tree_nodes.len());
         assert_eq!(3, tagged.start)
+    }
+
+    #[test]
+    #[should_panic]
+    fn test3() {
+        let tagged = vec![("the", "DT")];
+        let tagged = Tagged::from(tagged);
+        let (tagged, noun) = noun_single(tagged).unwrap();
+        assert_eq!(TreeType::Noun as u64, noun.tree_type);
+        assert_eq!(1, noun.tree_nodes.len());
+        assert_eq!(1, tagged.start)
+    }
+    #[test]
+    fn test4() {
+        // let x = tag("tag")("ta").unwrap();
+        let tagged = vec![("these", "DT")];
+        let tagged = Tagged::from(tagged);
+        let (tagged, noun) = noun(tagged).unwrap();
+        assert_eq!(TreeType::Noun as u64, noun.tree_type);
+        assert_eq!(1, noun.tree_nodes.len());
+        assert_eq!(1, tagged.start)
     }
 }
